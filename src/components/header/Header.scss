@@ -1,0 +1,11 @@
+.Header {
+  &-appBar.MuiAppBar-colorPrimary {
+    background: #AFEEEE;
+    padding: 10px;
+    color: black;
+  }
+
+  &-logoText.MuiTypography-body1 {
+    font-size: 26px;
+  }
+}

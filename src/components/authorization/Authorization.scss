@@ -1,0 +1,161 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.SignIn-form {
+  background: #ffffff;
+  border-radius: 10px;
+  margin-left: 50px;
+  padding: 55px 80px 70px 80px;
+
+  & p {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 36px;
+    color: #000000;
+    margin-bottom: 40px;
+  }
+
+  & form {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  & label {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    color: #000000;
+    margin-bottom: 10px;
+  }
+
+  & input {
+    width: 18vw;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+
+    &::placeholder {
+      font-size: 16px;
+    }
+  }
+}
+
+.send-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 40px;
+}
+
+#form-btn_s {
+  width: 8vw;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 18px;
+}
+
+.content-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #c5e9ff;
+  margin-top: 64px;
+  height: 100vh;
+
+  &_text {
+    max-width: 400px;
+  }
+
+  & a {
+    font-family: Roboto;
+    font-weight: 300;
+    font-size: 18px;
+    color: #000000;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 1500px) {
+  .SignIn-form {
+    padding: 50px 37px 65px 37px;
+
+    & input {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .content-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 120px;
+
+    & .SignIn-form {
+      width: 70%;
+      order: -1;
+      margin-left: 0;
+      margin-bottom: 20px;
+    } 
+  }
+
+  #form-btn_s {
+    width: 12vw;
+  }
+
+  .Content-mainImg {
+    display: none;
+  }
+}
+
+@media (width: 1024px) {
+  .content-block {
+    margin-top: 400px;
+  }
+}
+
+@media (max-width: 800px) {
+  #form-btn_s {
+    width: 20vw;
+  }
+
+  .content-block {
+    margin-top: 20%;
+
+    & .SignIn-form {
+      width: 90%;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .content-block {
+    margin-top: 180px;
+  }
+
+  #form-btn_s {
+    width: 35%;
+  }
+}
+
+@media (max-width: 400px) {
+  #form-btn_s {
+    width: 50%;
+  }
+}

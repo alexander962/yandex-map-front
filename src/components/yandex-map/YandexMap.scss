@@ -1,0 +1,91 @@
+.YandexMap_main {
+  position: absolute;
+  top: 0;
+  left: 50px;
+  z-index: 999;
+  padding: 10px;
+
+  .YandexMap_forms {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    background: wheat;
+    padding: 10px;
+    text-align: center;
+    max-width: 220px;
+
+    p {
+      font-size: 20px;
+    }
+
+    .MuiTextField-root {
+      background: white;
+      margin-bottom: 6px;
+    }
+
+    .MuiOutlinedInput-input {
+      padding: 6px;
+
+      &::-webkit-outer-spin-button {
+        display: none;
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &::-webkit-inner-spin-button {
+        display: none;
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.YandexMap-list {
+  &_item {
+    display: flex;
+    background:white;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+
+    p {
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    &:nth-child(1) {
+      margin-top: 5px;
+    }
+  }
+}
+
+.outBtn {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  z-index: 999;
+  padding: 8px 16px;
+  cursor: pointer;
+  background: wheat;
+  font-size: 16px;
+}
+
+.addBtn {
+  padding: 8px 14px;
+  cursor: pointer;
+  max-width: 100px;
+  margin: 0 auto;
+  margin-top: 15px;
+}

@@ -1,0 +1,161 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.Registration-form {
+  background: #ffffff;
+  border-radius: 10px;
+  margin-left: 50px;
+  padding: 38px 80px 20px 80px;
+
+  & p {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 36px;
+    color: #000000;
+    margin-bottom: 40px;
+  }
+
+  & form {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  & label {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    color: #000000;
+    margin-bottom: 10px;
+  }
+
+  & input {
+    width: 18vw;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-size: 20px;
+    margin-bottom: 15px;
+    padding: 10px;
+
+    &::placeholder {
+      font-size: 16px;
+    }
+  }
+}
+
+.send-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  & a {
+    font-family: Roboto;
+    font-weight: 300;
+    font-size: 18px;
+    color: #000000;
+    text-decoration: none;
+  }
+}
+
+#form-btnr {
+  width: 70%;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 300;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 1500px) {
+  .Registration-form {
+    padding: 33px 37px 15px 37px;
+
+    & input {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .content-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 16%;
+
+    & .Registration-form {
+      width: 70%;
+      order: -1;
+      margin-left: 0;
+      margin-bottom: 20px;
+    }
+  }
+
+  .Content-mainImg {
+    display: none;
+  }
+}
+
+.password-block {
+  position: relative;
+}
+
+.password-control {
+	position: absolute;
+	top: 8px;
+	right: 6px;
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+  cursor: pointer;
+}
+
+.password-control_repeat {
+	position: absolute;
+	top: 8px;
+	right: 6px;
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+  cursor: pointer;
+}
+
+@media (width: 1024px) {
+  .content-block {
+    margin-top: 40%;
+  }
+}
+
+@media (max-width: 800px) {
+  .content-block {
+    margin-top: 20%;
+
+    & .Registration-form {
+      width: 90%;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .content-block {
+    margin-top: 140px;
+  }
+}
+
+@media (max-width: 400px) {
+  #form-btnr {
+    width: 80%;
+    font-size: 15px;
+  }
+}
