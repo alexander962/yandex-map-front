@@ -14,7 +14,7 @@ function Alert(props) {
 
 export const Registration = () => {
   let history = useHistory();
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [severity, setSeverity] = useState("error");
@@ -35,16 +35,18 @@ export const Registration = () => {
 
   const addNewUser = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/createUser", {
-        login: login,
+      const res = await axios.post("http://localhost:8000/api/registration", {
+        email: email,
         password: password,
       });
       setSeverity("success");
       setMessage("Вы удачно зарегестрированны");
       setOpen(true);
-      localStorage.setItem("user", JSON.stringify(res.data.data._id));
+      localStorage.setItem("user", res.data.user.id);
+      localStorage.setItem("token", res.data.accessToken);
       history.push("/map");
     } catch (e) {
+      console.log(e)
       setSeverity("error");
       setMessage("Такой пользователь уже существует");
       setOpen(true);
@@ -52,11 +54,11 @@ export const Registration = () => {
   };
 
   const onClickRegisterBtn = (e) => {
-    if (login === "" || password === "" || repeatPassword === "") {
+    if (email === "" || password === "" || repeatPassword === "") {
       setMessage("Заполните все поля!");
       setOpen(true);
-    } else if (login.length < 6) {
-      setMessage("Минимальное колличество символов для Login = 6");
+    } else if (!/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+      setMessage("Введите корректный email");
       setOpen(true);
     } else if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
       setMessage(
@@ -68,7 +70,7 @@ export const Registration = () => {
       setOpen(true);
     } else {
       addNewUser();
-      setLogin("");
+      setEmail("");
       setPassword("");
       setRepeatPassword("");
     }
@@ -119,9 +121,9 @@ export const Registration = () => {
             <input
               type="text"
               id="login"
-              value={login}
+              value={email}
               placeholder="Login"
-              onChange={(e) => setLogin(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <label htmlFor="password"> Password: </label>
             <div className="password-block">

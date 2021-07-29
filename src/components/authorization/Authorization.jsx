@@ -14,7 +14,7 @@ function Alert(props) {
 
 export const Authorization = () => {
   // let history = useHistory();
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [severity, setSeverity] = useState("error");
   const history = useHistory();
@@ -35,16 +35,16 @@ export const Authorization = () => {
   const signInCheck = async () => {
     try {
       await axios
-        .post("http://localhost:8000/checkUser", {
-          login: login,
+        .post("http://localhost:8000/api/login", {
+          email: email,
           password: password,
         })
         .then((res) => {
-          console.log(res.data.data._id);
           setSeverity("success");
           setMessage("Вы удачно авторизованы");
           setOpen(true);
-          localStorage.setItem("user", JSON.stringify(res.data.data._id));
+          localStorage.setItem("user", res.data.user.id);
+          localStorage.setItem("token", res.data.accessToken);
           history.push("./map");
         });
     } catch (e) {
@@ -55,10 +55,14 @@ export const Authorization = () => {
   };
 
   const onClickSignInBtn = (e) => {
-    if (login === "" || password === "") {
+    if (email === "" || password === "") {
       setMessage("Заполните все поля!");
       setOpen(true);
-    } else if (login.length < 6) {
+    } else if (
+      !/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        email
+      )
+    ) {
       setMessage("Минимальное колличество символов для Login = 6");
       setOpen(true);
     } else if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
@@ -103,9 +107,9 @@ export const Authorization = () => {
             <input
               type="text"
               id="loginSignIn"
-              value={login}
+              value={email}
               placeholder="Login"
-              onChange={(e) => setLogin(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <label htmlFor="passwordSignIn"> Password: </label>
             <div className="password-block">
