@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  YMaps,
-  Map,
-  GeolocationControl,
-  GeoObject,
-} from "react-yandex-maps";
+import { YMaps, Map, GeolocationControl, GeoObject } from "react-yandex-maps";
 import { TextField } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -25,15 +20,18 @@ export const YandexMap = () => {
   const [name, setName] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
-  const [longitudeCenter, setLongitudeCenter] = useState('');
-  const [latitudeCenter, setLatitudeCenter] = useState('');
+  const [longitudeCenter, setLongitudeCenter] = useState("");
+  const [latitudeCenter, setLatitudeCenter] = useState("");
   const [deleteMod, setDeleteMod] = useState(false);
   const [editMod, setEditMod] = useState(false);
   const [coordinations, setCoordinations] = useState([]);
   const [open, setOpen] = useState(false);
   const [idDel, setIdDelete] = useState("");
   const [itemEdit, setItemEdit] = useState("");
-  const userIdBody = JSON.parse(localStorage.getItem("user"));
+  const userIdBody = localStorage.getItem("user");
+  const USER_TOKEN = localStorage.getItem("token");
+  console.log(USER_TOKEN + "  !!!!@KKKJD!");
+  console.log(userIdBody);
 
   useEffect(() => getAllCoordinations(userIdBody), []);
 
@@ -41,7 +39,10 @@ export const YandexMap = () => {
     console.log(userId);
     try {
       await axios
-        .get(`http://localhost:8000/getAllCoordinates?userIdBody=${userId}`)
+        .get(
+          `http://localhost:8000/api/getAllCoordinates?userIdBody=${userId}`,
+          { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
+        )
         .then((results) => {
           console.log(results.data.data);
           setCoordinations(results.data.data);
@@ -57,12 +58,16 @@ export const YandexMap = () => {
     latitude,
     userIdBody
   ) => {
-    await axios.post("http://localhost:8000/createCoordinates", {
-      name: name,
-      longitude: longitude,
-      latitude: latitude,
-      userId: userIdBody,
-    });
+    await axios.post(
+      "http://localhost:8000/api/createCoordinates",
+      {
+        name: name,
+        longitude: longitude,
+        latitude: latitude,
+        userId: userIdBody,
+      },
+      { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
+    );
     getAllCoordinations(userIdBody);
     setName("");
     setLongitude("");
@@ -71,13 +76,17 @@ export const YandexMap = () => {
 
   const editCoordinates = async (editParams) => {
     await axios
-      .patch("http://localhost:8000/editCoordinates", {
-        _id: editParams.item._id,
-        name: editParams.nameEdit,
-        longitude: editParams.longitudeEdit,
-        latitude: editParams.latitudeEdit,
-        userId: userIdBody,
-      })
+      .patch(
+        "http://localhost:8000/api/editCoordinates",
+        {
+          _id: editParams.item._id,
+          name: editParams.nameEdit,
+          longitude: editParams.longitudeEdit,
+          latitude: editParams.latitudeEdit,
+          userId: userIdBody,
+        },
+        { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
+      )
       .then((res) => {
         setCoordinations(res.data.data);
       });
@@ -86,7 +95,8 @@ export const YandexMap = () => {
 
   const deleteCoordinates = async (id) => {
     await axios
-      .delete("http://localhost:8000/deleteCoordinates", {
+      .delete("http://localhost:8000/api/deleteCoordinates", {
+        headers: { Authorization: `Bearer ${USER_TOKEN}` },
         data: { id: id },
       })
       .then((res) => {
@@ -115,11 +125,14 @@ export const YandexMap = () => {
     const loc = location[0] + " " + location[1];
     console.log(loc);
     ymaps.geocode(loc).then((result) => {
-      const longitude = {coordinates: result.geoObjects.get(0).geometry.getCoordinates()[0]}
-      const latitude = {coordinates: result.geoObjects.get(0).geometry.getCoordinates()[1]}
+      const longitude = {
+        coordinates: result.geoObjects.get(0).geometry.getCoordinates()[0],
+      };
+      const latitude = {
+        coordinates: result.geoObjects.get(0).geometry.getCoordinates()[1],
+      };
       handleClickMap(longitude.coordinates, latitude.coordinates);
-    }
-    );
+    });
   };
 
   const handleApiAvaliable = (ymaps) => {
