@@ -10,6 +10,7 @@ import "./YandexMap.scss";
 import { DeleteModal } from "../DeleteModal/DeleteModal";
 import { EditModal } from "../EditeModal/EditeModal";
 import axios from "axios";
+import $api from "../../http/index"
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -38,10 +39,9 @@ export const YandexMap = () => {
   const getAllCoordinations = async (userId) => {
     console.log(userId);
     try {
-      await axios
+      await $api
         .get(
-          `http://localhost:8000/api/getAllCoordinates?userIdBody=${userId}`,
-          { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
+          `http://localhost:8000/api/getAllCoordinates?userIdBody=${userId}`
         )
         .then((results) => {
           console.log(results.data.data);
@@ -58,7 +58,7 @@ export const YandexMap = () => {
     latitude,
     userIdBody
   ) => {
-    await axios.post(
+    await $api.post(
       "http://localhost:8000/api/createCoordinates",
       {
         name: name,
@@ -66,7 +66,6 @@ export const YandexMap = () => {
         latitude: latitude,
         userId: userIdBody,
       },
-      { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
     );
     getAllCoordinations(userIdBody);
     setName("");
@@ -75,7 +74,7 @@ export const YandexMap = () => {
   };
 
   const editCoordinates = async (editParams) => {
-    await axios
+    await $api
       .patch(
         "http://localhost:8000/api/editCoordinates",
         {
@@ -85,7 +84,6 @@ export const YandexMap = () => {
           latitude: editParams.latitudeEdit,
           userId: userIdBody,
         },
-        { headers: { Authorization: `Bearer ${USER_TOKEN}` } }
       )
       .then((res) => {
         setCoordinations(res.data.data);
@@ -94,9 +92,8 @@ export const YandexMap = () => {
   };
 
   const deleteCoordinates = async (id) => {
-    await axios
+    await $api
       .delete("http://localhost:8000/api/deleteCoordinates", {
-        headers: { Authorization: `Bearer ${USER_TOKEN}` },
         data: { id: id },
       })
       .then((res) => {
@@ -139,10 +136,37 @@ export const YandexMap = () => {
     getGeoLocation(ymaps);
   };
 
-  const handleOutBtn = () => {
-    localStorage.clear();
-    history.push("/autorization");
+  const logout = async () => {
+    try {
+      const res = await $api.post("http://localhost:8000/api/logout");
+      // localStorage.clear();
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      history.push("/autorization");
+    } catch (e) {
+      console.log(e.response?.data?.message);
+    }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      checkAuth();
+    }
+  }, []);
+
+  // каждый раз когда открываем приложение убеждаемся, что пользователь авторизован
+  const checkAuth = async () => {
+    try {
+      // обновляем accessToken
+      const response = await axios.get(`http://localhost:8000/api/refresh`, {withCredentials: true});
+      console.log(response)
+      localStorage.setItem("token", response.data.accessToken);
+      this.setAuth(true);
+      this.setUser(response.data.user);
+    } catch (e) {
+      console.log(e.response?.data?.message);
+    }
+  }
 
   const handleDelete = (id) => {
     setDeleteMod(true);
@@ -210,7 +234,7 @@ export const YandexMap = () => {
             );
           })}
       </Map>
-      <button onClick={() => handleOutBtn()} className="outBtn">
+      <button onClick={() => logout()} className="outBtn">
         Выход
       </button>
       <div className="YandexMap_main">

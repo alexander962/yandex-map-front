@@ -7,6 +7,7 @@ import { Header } from "../header/Header";
 import view from "../../images/view.svg";
 import noView from "../../images/invisible.svg";
 import "./Authorization.scss";
+import $api from "../../http/index";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -20,6 +21,9 @@ export const Authorization = () => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const errors = [];
+  let validEmail = false
+  let validPassword = false
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +38,7 @@ export const Authorization = () => {
 
   const signInCheck = async () => {
     try {
-      await axios
+      await $api
         .post("http://localhost:8000/api/login", {
           email: email,
           password: password,
@@ -56,21 +60,28 @@ export const Authorization = () => {
 
   const onClickSignInBtn = (e) => {
     if (email === "" || password === "") {
+      errors.push(`Заполните все поля! `);
       setMessage("Заполните все поля!");
       setOpen(true);
-    } else if (
-      !/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
-      setMessage("Минимальное колличество символов для Login = 6");
+    }
+    if (
+      !/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+      errors.push(`Введите корректный email, например: example@gmail.com! `);
+      setMessage(errors);
       setOpen(true);
-    } else if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
+    } else {
+      validEmail = true;
+    }
+    if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
+      errors.push("Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом");
       setMessage(
-        "Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом"
+        errors
       );
       setOpen(true);
     } else {
+      validPassword = true
+    } 
+    if (validEmail && validPassword) {
       signInCheck();
     }
   };
