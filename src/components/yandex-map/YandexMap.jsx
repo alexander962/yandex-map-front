@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Context } from "../../index";
 import { useHistory } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 import { YMaps, Map, GeolocationControl, GeoObject } from "react-yandex-maps";
 import { TextField } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -10,13 +12,13 @@ import "./YandexMap.scss";
 import { DeleteModal } from "../DeleteModal/DeleteModal";
 import { EditModal } from "../EditeModal/EditeModal";
 import axios from "axios";
-import $api from "../../http/index"
+import $api from "../../http/index";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const YandexMap = () => {
+const YandexMap = () => {
   const history = useHistory();
   const [name, setName] = useState("");
   const [longitude, setLongitude] = useState("");
@@ -30,23 +32,14 @@ export const YandexMap = () => {
   const [idDel, setIdDelete] = useState("");
   const [itemEdit, setItemEdit] = useState("");
   const userIdBody = localStorage.getItem("user");
-  const USER_TOKEN = localStorage.getItem("token");
-  console.log(USER_TOKEN + "  !!!!@KKKJD!");
-  console.log(userIdBody);
+  const { store } = useContext(Context);
 
   useEffect(() => getAllCoordinations(userIdBody), []);
 
   const getAllCoordinations = async (userId) => {
-    console.log(userId);
     try {
-      await $api
-        .get(
-          `http://localhost:8000/api/getAllCoordinates?userIdBody=${userId}`
-        )
-        .then((results) => {
-          console.log(results.data.data);
-          setCoordinations(results.data.data);
-        });
+      await store.getAllCoordinates(userId);
+      setCoordinations(store.coordinates);
     } catch (e) {
       setOpen(true);
     }
@@ -58,15 +51,7 @@ export const YandexMap = () => {
     latitude,
     userIdBody
   ) => {
-    await $api.post(
-      "http://localhost:8000/api/createCoordinates",
-      {
-        name: name,
-        longitude: longitude,
-        latitude: latitude,
-        userId: userIdBody,
-      },
-    );
+    await store.createNewCoordinates(name, longitude, latitude, userIdBody);
     getAllCoordinations(userIdBody);
     setName("");
     setLongitude("");
@@ -74,36 +59,19 @@ export const YandexMap = () => {
   };
 
   const editCoordinates = async (editParams) => {
-    await $api
-      .patch(
-        "http://localhost:8000/api/editCoordinates",
-        {
-          _id: editParams.item._id,
-          name: editParams.nameEdit,
-          longitude: editParams.longitudeEdit,
-          latitude: editParams.latitudeEdit,
-          userId: userIdBody,
-        },
-      )
-      .then((res) => {
-        setCoordinations(res.data.data);
-      });
+    const userId = localStorage.getItem("user");
+    await store.editCoordinate(editParams, userId);
+    setCoordinations(store.coordinates);
     getAllCoordinations(userIdBody);
   };
 
   const deleteCoordinates = async (id) => {
-    await $api
-      .delete("http://localhost:8000/api/deleteCoordinates", {
-        data: { id: id },
-      })
-      .then((res) => {
-        setCoordinations(res.data.data);
-      });
+    await store.deleteCoordinates(id);
+    setCoordinations(store.coordinates);
     getAllCoordinations(userIdBody);
   };
 
   const getGeoLocation = (ymaps) => {
-    console.log(ymaps);
     return ymaps.geolocation
       .get({
         provider: "browser",
@@ -118,9 +86,7 @@ export const YandexMap = () => {
   };
 
   const getGeocode = (ymaps, location) => {
-    console.log(location);
     const loc = location[0] + " " + location[1];
-    console.log(loc);
     ymaps.geocode(loc).then((result) => {
       const longitude = {
         coordinates: result.geoObjects.get(0).geometry.getCoordinates()[0],
@@ -137,36 +103,16 @@ export const YandexMap = () => {
   };
 
   const logout = async () => {
-    try {
-      const res = await $api.post("http://localhost:8000/api/logout");
-      // localStorage.clear();
-      localStorage.removeItem("token")
-      localStorage.removeItem("user")
+    await store.logout().then((res) => {
       history.push("/autorization");
-    } catch (e) {
-      console.log(e.response?.data?.message);
-    }
+    });
   };
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      checkAuth();
+      store.checkAuth();
     }
   }, []);
-
-  // каждый раз когда открываем приложение убеждаемся, что пользователь авторизован
-  const checkAuth = async () => {
-    try {
-      // обновляем accessToken
-      const response = await axios.get(`http://localhost:8000/api/refresh`, {withCredentials: true});
-      console.log(response)
-      localStorage.setItem("token", response.data.accessToken);
-      this.setAuth(true);
-      this.setUser(response.data.user);
-    } catch (e) {
-      console.log(e.response?.data?.message);
-    }
-  }
 
   const handleDelete = (id) => {
     setDeleteMod(true);
@@ -330,3 +276,5 @@ export const YandexMap = () => {
     </YMaps>
   );
 };
+
+export default observer(YandexMap);

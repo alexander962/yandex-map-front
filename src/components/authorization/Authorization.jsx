@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { Context } from "../../index";
 import axios from "axios";
+import { observer } from "mobx-react-lite";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Header } from "../header/Header";
@@ -13,7 +15,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const Authorization = () => {
+const Authorization = () => {
   // let history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +26,7 @@ export const Authorization = () => {
   const errors = [];
   let validEmail = false
   let validPassword = false
+  const { store } = useContext(Context);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,23 +40,11 @@ export const Authorization = () => {
   };
 
   const signInCheck = async () => {
-    try {
-      await $api
-        .post("http://localhost:8000/api/login", {
-          email: email,
-          password: password,
-        })
-        .then((res) => {
-          setSeverity("success");
-          setMessage("Вы удачно авторизованы");
-          setOpen(true);
-          localStorage.setItem("user", res.data.user.id);
-          localStorage.setItem("token", res.data.accessToken);
-          history.push("./map");
-        });
-    } catch (e) {
-      setSeverity("error");
-      setMessage("Вы ввели неверный логин или пароль");
+    await store.login(email, password);
+    if ( localStorage.getItem("token")) {
+      history.push('/map')
+    } else {
+      setMessage("Пользователь с таким email не найден");
       setOpen(true);
     }
   };
@@ -158,3 +149,5 @@ export const Authorization = () => {
     </div>
   );
 };
+
+export default observer(Authorization);
