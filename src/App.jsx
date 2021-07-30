@@ -1,8 +1,8 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { YandexMap } from "./components/yandex-map/YandexMap";
-import { Registration } from "./components/registration/Registration";
-import { Authorization } from "./components/authorization/Authorization";
+import YandexMap from "./components/yandex-map/YandexMap";
+import Registration from "./components/registration/Registration";
+import Authorization from "./components/authorization/Authorization";
 
 export const App = () => {
   return (

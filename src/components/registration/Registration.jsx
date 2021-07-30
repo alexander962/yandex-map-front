@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { Context } from "../../index";
 import axios from "axios";
+import { observer } from "mobx-react-lite";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Header } from "../header/Header";
@@ -13,7 +15,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const Registration = () => {
+const Registration = () => {
   let history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +25,7 @@ export const Registration = () => {
   let validEmail = false
   let validPassword = false
   let validRepeatPassword = false
+  const { store } = useContext(Context);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,21 +42,11 @@ export const Registration = () => {
   };
 
   const addNewUser = async () => {
-    try {
-      const res = await $api.post("http://localhost:8000/api/registration", {
-        email: email,
-        password: password,
-      });
-      setSeverity("success");
-      setMessage("Вы удачно зарегестрированны");
-      setOpen(true);
-      localStorage.setItem("user", res.data.user.id);
-      localStorage.setItem("token", res.data.accessToken);
-      history.push("/map");
-    } catch (e) {
-      console.log(e)
-      setSeverity("error");
-      setMessage("Такой пользователь уже существует");
+    await store.registration(email, password);
+    if ( localStorage.getItem("token")) {
+      history.push('/map')
+    } else {
+      setMessage("Пользователь с таким email уже существует");
       setOpen(true);
     }
   };
@@ -196,3 +189,5 @@ export const Registration = () => {
     </div>
   );
 };
+
+export default observer(Registration)
