@@ -7,6 +7,7 @@ import { Header } from "../header/Header";
 import view from "../../images/view.svg";
 import noView from "../../images/invisible.svg";
 import "./Registration.scss";
+import $api from "../../http/index"
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -18,6 +19,10 @@ export const Registration = () => {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [severity, setSeverity] = useState("error");
+  const errors = [];
+  let validEmail = false
+  let validPassword = false
+  let validRepeatPassword = false
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +40,7 @@ export const Registration = () => {
 
   const addNewUser = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/registration", {
+      const res = await $api.post("http://localhost:8000/api/registration", {
         email: email,
         password: password,
       });
@@ -55,20 +60,34 @@ export const Registration = () => {
 
   const onClickRegisterBtn = (e) => {
     if (email === "" || password === "" || repeatPassword === "") {
+      errors.push("Заполните все поля! ")
       setMessage("Заполните все поля!");
       setOpen(true);
-    } else if (!/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
-      setMessage("Введите корректный email");
-      setOpen(true);
-    } else if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
-      setMessage(
-        "Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом"
-      );
-      setOpen(true);
-    } else if (password !== repeatPassword) {
-      setMessage("Пароли не совпадают!");
+    } 
+    if (!/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+      errors.push(`Введите корректный email, например: example@gmail.com! `)
+      setMessage(errors);
       setOpen(true);
     } else {
+      validEmail = true
+    }
+    if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
+      errors.push("Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом! ")
+      setMessage(
+        errors
+      );
+      setOpen(true);
+    } else {
+      validPassword = true
+    }
+    if (password !== repeatPassword) {
+      errors.push("Пароли не совпадают!")
+      setMessage(errors);
+      setOpen(true);
+    } else {
+      validRepeatPassword = true
+    } 
+    if (validEmail && validPassword && validRepeatPassword) {
       addNewUser();
       setEmail("");
       setPassword("");
