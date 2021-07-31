@@ -43,8 +43,7 @@ const YandexMap = () => {
   const metkaBlack = "https://image.flaticon.com/icons/png/512/484/484167.png";
   const metkaRed = "https://image.flaticon.com/icons/png/512/684/684908.png";
   // Активация аккаунта
-  const isActivated = JSON.parse(localStorage.getItem("isActivated"));
-  console.log(typeof(isActivated))
+  const [isActivated, setIsActivated] = useState(false);
 
   const changeHandler = async (event) => {
     await setValueRadio(event.target.value);
@@ -55,10 +54,22 @@ const YandexMap = () => {
 
   useEffect(() => getAllCoordinations(userIdBody), []);
 
+  useEffect(() => getActivated(userIdBody), []);
+
   const getAllCoordinations = async (userId) => {
     try {
       await store.getAllCoordinates(userId);
       setCoordinations(store.coordinates);
+    } catch (e) {
+      setOpen(true);
+    }
+  };
+
+  const getActivated = async (userId) => {
+    try {
+      await store.getActivated(userId);
+      console.log('I am here')
+      setIsActivated(store.isActivated);
     } catch (e) {
       setOpen(true);
     }

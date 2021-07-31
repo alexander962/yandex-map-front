@@ -6,6 +6,7 @@ import { API_URL } from "../http";
 
 export default class Store {
   coordinates = {};
+  isActivated = false
 
   constructor() {
     makeAutoObservable(this);
@@ -84,6 +85,16 @@ export default class Store {
     try {
       const response = await CoordinationsService.deleteCoordinates(id);
       this.coordinates = response.data.data;
+    } catch (e) {
+      console.log(e.response?.data?.message);
+    }
+  }
+
+  async getActivated(id) {
+    try {
+      const response = await AuthService.getActivated(id);
+      console.log(response)
+      this.isActivated = response.data;
     } catch (e) {
       console.log(e.response?.data?.message);
     }
