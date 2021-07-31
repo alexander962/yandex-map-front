@@ -5,12 +5,13 @@ export default class CoordinationsService {
     return $api.get(`/getAllCoordinates?userIdBody=${userId}`);
   }
 
-  static async createNewCoordinates(name, longitude, latitude, userId) {
+  static async createNewCoordinates(name, longitude, latitude, userId, metka) {
     return $api.post("/createCoordinates", {
       name: name,
       longitude: longitude,
       latitude: latitude,
       userId: userId,
+      metka: metka
     });
   }
 
