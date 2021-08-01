@@ -38,7 +38,7 @@ const Authorization = () => {
     setOpen(false);
   };
 
-  const signInCheck = async () => {
+  const signInCheck = async (email, password) => {
     await store.login(email, password);
     if (localStorage.getItem("token")) {
       history.push("/map");
@@ -75,7 +75,7 @@ const Authorization = () => {
       validPassword = true;
     }
     if (validEmail && validPassword) {
-      signInCheck();
+      signInCheck(email, password);
     }
   };
 
