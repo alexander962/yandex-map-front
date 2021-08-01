@@ -66,7 +66,6 @@ const YandexMap = () => {
   const getActivated = async (userId) => {
     try {
       await store.getActivated(userId);
-      console.log('I am here')
       setIsActivated(store.isActivated);
     } catch (e) {
       setOpen(true);

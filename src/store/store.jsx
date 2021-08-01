@@ -16,7 +16,7 @@ export default class Store {
     try {
       const response = await AuthService.login(email, password);
       localStorage.setItem("user", response.data.user.id);
-      localStorage.setItem("isActivated", response.data.user.isActivated)
+      // localStorage.setItem("isActivated", response.data.user.isActivated)
       localStorage.setItem("token", response.data.accessToken);
     } catch (e) {
       console.log(e.response?.data?.message);
@@ -27,7 +27,7 @@ export default class Store {
     try {
       const response = await AuthService.registration(email, password);
       localStorage.setItem("user", response.data.user.id);
-      localStorage.setItem("isActivated", response.data.user.isActivated)
+      // localStorage.setItem("isActivated", response.data.user.isActivated)
       localStorage.setItem("token", response.data.accessToken);
     } catch (e) {
       console.log(e.response?.data?.message);
@@ -36,7 +36,7 @@ export default class Store {
 
   async logout() {
     try {
-      const response = await AuthService.logout();
+      await AuthService.logout();
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     } catch (e) {
@@ -93,8 +93,7 @@ export default class Store {
   async getActivated(id) {
     try {
       const response = await AuthService.getActivated(id);
-      console.log(response)
-      this.isActivated = response.data;
+      this.isActivated = response.data.isActivated;
     } catch (e) {
       console.log(e.response?.data?.message);
     }
