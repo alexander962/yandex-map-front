@@ -1,15 +1,14 @@
 import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../../index";
-import axios from "axios";
 import { observer } from "mobx-react-lite";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Header } from "../header/Header";
+import backVideo from "../../video/back-video.mp4";
 import view from "../../images/view.svg";
 import noView from "../../images/invisible.svg";
 import "./Registration.scss";
-import $api from "../../http/index"
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -22,9 +21,9 @@ const Registration = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [severity, setSeverity] = useState("error");
   const errors = [];
-  let validEmail = false
-  let validPassword = false
-  let validRepeatPassword = false
+  let validEmail = false;
+  let validPassword = false;
+  let validRepeatPassword = false;
   const { store } = useContext(Context);
 
   const handleSubmit = (e) => {
@@ -43,8 +42,8 @@ const Registration = () => {
 
   const addNewUser = async () => {
     await store.registration(email, password);
-    if ( localStorage.getItem("token")) {
-      history.push('/map')
+    if (localStorage.getItem("token")) {
+      history.push("/map");
     } else {
       setMessage("Пользователь с таким email уже существует");
       setOpen(true);
@@ -53,33 +52,37 @@ const Registration = () => {
 
   const onClickRegisterBtn = (e) => {
     if (email === "" || password === "" || repeatPassword === "") {
-      errors.push("Заполните все поля! ")
+      errors.push("Заполните все поля! ");
       setMessage("Заполните все поля!");
       setOpen(true);
-    } 
-    if (!/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
-      errors.push(`Введите корректный email, например: example@gmail.com! `)
+    }
+    if (
+      !/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        email
+      )
+    ) {
+      errors.push(`Введите корректный email, например: example@gmail.com! `);
       setMessage(errors);
       setOpen(true);
     } else {
-      validEmail = true
+      validEmail = true;
     }
     if (!/(?=.*[0-9])(?=.*[A-Za-z]){5,}/.test(password)) {
-      errors.push("Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом! ")
-      setMessage(
-        errors
+      errors.push(
+        "Введите в поле password не менее 6 латинских символов, минимум 1 из которых является числом! "
       );
-      setOpen(true);
-    } else {
-      validPassword = true
-    }
-    if (password !== repeatPassword) {
-      errors.push("Пароли не совпадают!")
       setMessage(errors);
       setOpen(true);
     } else {
-      validRepeatPassword = true
-    } 
+      validPassword = true;
+    }
+    if (password !== repeatPassword) {
+      errors.push("Пароли не совпадают!");
+      setMessage(errors);
+      setOpen(true);
+    } else {
+      validRepeatPassword = true;
+    }
     if (validEmail && validPassword && validRepeatPassword) {
       addNewUser();
       setEmail("");
@@ -118,6 +121,23 @@ const Registration = () => {
     <div>
       <Header heading="Зарегистрироваться в системе" />
       <div className="content-block">
+        <video
+          autoPlay
+          loop
+          muted
+          style={{
+            position: "absolute",
+            width: "100%",
+            left: "50%",
+            top: "50%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "translate(-50%, -50%)",
+            zIndex: "-1",
+          }}
+        >
+          <source src={backVideo} type="video/mp4" />
+        </video>
         <p className="content-block_text">
           Подробная карта России и мира, на которой отмечено всё на свете: от
           ресторанов и музеев до парков и аптек. На сервисе есть фотографии
@@ -190,4 +210,4 @@ const Registration = () => {
   );
 };
 
-export default observer(Registration)
+export default observer(Registration);
