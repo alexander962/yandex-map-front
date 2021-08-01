@@ -72,12 +72,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #c5e9ff;
   margin-top: 64px;
-  height: 100vh;
+  height: calc(100vh - 64px);
 
   &_text {
     max-width: 400px;
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    background: black;
+    padding: 15px;
+    border-radius: 10px;
   }
 
   & a {
@@ -91,7 +96,7 @@
 
 @media (max-width: 1500px) {
   .SignIn-form {
-    padding: 50px 37px 65px 37px;
+    padding: 25px 37px 35px 37px;
 
     & input {
       width: 100%;
@@ -112,7 +117,7 @@
       order: -1;
       margin-left: 0;
       margin-bottom: 20px;
-    } 
+    }
   }
 
   #form-btn_s {

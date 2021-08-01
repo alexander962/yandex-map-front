@@ -37,11 +37,9 @@ const YandexMap = () => {
   const userIdBody = localStorage.getItem("user");
   const { store } = useContext(Context);
   // Работа с меткой
-  const [metka, setMetka] = useState();
+  const [metka, setMetka] = useState('Standart');
   const [valueRadio, setValueRadio] = useState("1");
   const [urlMetka, setUrlMetka] = useState();
-  const metkaBlack = "https://image.flaticon.com/icons/png/512/484/484167.png";
-  const metkaRed = "https://image.flaticon.com/icons/png/512/684/684908.png";
   // Активация аккаунта
   const [isActivated, setIsActivated] = useState(false);
 
@@ -191,7 +189,7 @@ const YandexMap = () => {
     <YMaps
       query={{
         ns: "ymaps",
-        apikey: "1e259de4-7ea3-43d8-8ab5-613ee704fc89",
+        apikey: process.env.REACT_APP_YANDEX_API_KEY,
         load: "package.full",
       }}
       modules={[
@@ -230,11 +228,6 @@ const YandexMap = () => {
                     type: "Point",
                     coordinates: [item.longitude, item.latitude],
                   }}
-                  // options={{
-                  //   iconLayout: "default#image",
-                  //   iconImageSize: [50, 50],
-                  //   iconImageHref: item.metka
-                  // }}
                   modules={[
                     "geoObject.addon.balloon",
                     "geoObject.addon.hint",
@@ -350,14 +343,14 @@ const YandexMap = () => {
                 id="markerChoice2"
                 name="marker"
                 value="2"
-                onClick={() => setMetka(metkaBlack)}
+                onClick={() => setMetka(process.env.REACT_APP_BLACK_LABEL)}
                 checked={valueRadio === "2" ? true : false}
                 onChange={changeHandler}
                 style={{ cursor: "pointer" }}
               />
               <label for="markerChoice2" style={{ cursor: "pointer" }}>
                 <img
-                  src="https://image.flaticon.com/icons/png/512/484/484167.png"
+                  src={process.env.REACT_APP_BLACK_LABEL}
                   alt="Чёрная"
                   style={{ width: "25px", height: "25px" }}
                 />
@@ -375,15 +368,15 @@ const YandexMap = () => {
                 id="markerChoice3"
                 name="marker"
                 value="3"
-                onClick={() => setMetka(metkaRed)}
+                onClick={() => setMetka(process.env.REACT_APP_RED_LABEL)}
                 checked={valueRadio === "3" ? true : false}
                 onChange={changeHandler}
                 style={{ cursor: "pointer" }}
               />
               <label for="markerChoice3" style={{ cursor: "pointer" }}>
                 <img
-                  src="https://image.flaticon.com/icons/png/512/684/684908.png"
-                  alt="Чёрная"
+                  src={process.env.REACT_APP_RED_LABEL}
+                  alt="Красная"
                   style={{ width: "25px", height: "25px" }}
                 />
               </label>
